@@ -246,10 +246,14 @@ docker exec -it lab01-web /bin/bash
 
 ## Credits
 
-Created by **Raghuveer Chouhan** ([@rveer](https://github.com/bot2root))
+Created by **Raghuveer Singh Chouhan** ([@Bot@Root](https://github.com/bot2root))
 
 Built for security training and education. Use responsibly.
 
+Follow For More Cyber Security Content !!
+
+Youtube : ([@Bot@Root](https://www.youtube.com/bot2root))
+Instagram : ([@Bot@Root](https://www.instagram.com/bot2root))
 ---
 
 ## License
