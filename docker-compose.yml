@@ -1,0 +1,197 @@
+# ============================================================
+# Bot2Root CTF Lab — Docker Compose
+# A multi-stage penetration testing CTF with 11 containers
+# across 3 segmented networks.
+#
+# Usage:  docker compose up -d --build
+# Stop:   docker compose down
+# Reset:  docker compose down -v && docker compose up -d --build
+# ============================================================
+
+networks:
+  lab01-net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 10.10.1.0/24
+  lab02-net:
+    driver: bridge
+    internal: true
+    ipam:
+      config:
+        - subnet: 10.10.2.0/24
+  lab03-net:
+    driver: bridge
+    internal: true
+    ipam:
+      config:
+        - subnet: 10.10.3.0/24
+
+services:
+  # ===================== LAB01 — Public-Facing =====================
+
+  lab01-web:
+    build:
+      context: ./lab01/web
+    container_name: lab01-web
+    hostname: lab01-web
+    ports:
+      - "80:80"
+    networks:
+      lab01-net:
+        ipv4_address: 10.10.1.10
+    volumes:
+      - web-data:/app/data
+      - web-uploads:/app/uploads
+    environment:
+      - FLASK_ENV=production
+      - FLAG_UPLOAD=FLAG{b2r_file_upload_rce_3d91}
+      - INSTANCE_NAME=default
+      - INSTANCE_IP=localhost
+      - PORT_WEB=80
+      - PORT_NGINX=8080
+      - PORT_FTP=21
+      - PORT_SSH=2222
+      - PORT_IKE=500
+      - PORT_SMB=445
+    restart: unless-stopped
+
+  lab01-ftp:
+    build:
+      context: ./lab01/ftp
+    container_name: lab01-ftp
+    hostname: lab01-ftp
+    ports:
+      - "21:21"
+      - "30000-30009:30000-30009"
+    networks:
+      lab01-net:
+        ipv4_address: 10.10.1.20
+    restart: unless-stopped
+
+  lab01-smb:
+    build:
+      context: ./lab01/smb
+    container_name: lab01-smb
+    hostname: lab01-smb
+    ports:
+      - "139:139"
+      - "445:445"
+    networks:
+      lab01-net:
+        ipv4_address: 10.10.1.30
+    restart: unless-stopped
+
+  lab01-ike:
+    build:
+      context: ./lab01/ike
+    container_name: lab01-ike
+    hostname: lab01-ike
+    ports:
+      - "2222:22"
+      - "500:500/udp"
+      - "4500:4500/udp"
+    networks:
+      lab01-net:
+        ipv4_address: 10.10.1.40
+    cap_add:
+      - NET_ADMIN
+    volumes:
+      - ike-home:/home/ike
+    tmpfs:
+      - /tmp:noexec,nosuid,size=50m
+    restart: unless-stopped
+
+  lab01-nginx:
+    build:
+      context: ./lab01/nginx
+    container_name: lab01-nginx
+    hostname: lab01-nginx
+    ports:
+      - "8080:80"
+    networks:
+      lab01-net:
+        ipv4_address: 10.10.1.50
+    restart: unless-stopped
+
+  lab01-gateway:
+    build:
+      context: ./lab01/gateway
+    container_name: lab01-gateway
+    hostname: gateway
+    networks:
+      lab01-net:
+        ipv4_address: 10.10.1.254
+      lab02-net:
+        ipv4_address: 10.10.2.254
+    cap_add:
+      - NET_ADMIN
+    restart: unless-stopped
+
+  # ===================== LAB02 — Pivotable =====================
+
+  lab02-api:
+    build:
+      context: ./lab02/api
+    container_name: lab02-api
+    hostname: lab02-api
+    networks:
+      lab02-net:
+        ipv4_address: 10.10.2.10
+      lab03-net:
+        ipv4_address: 10.10.3.10
+    environment:
+      - REDIS_HOST=10.10.3.30
+      - METADATA_HOST=10.10.3.50
+    restart: unless-stopped
+
+  lab02-ssh:
+    build:
+      context: ./lab02/ssh
+    container_name: lab02-ssh
+    hostname: lab02-ssh
+    networks:
+      lab02-net:
+        ipv4_address: 10.10.2.40
+      lab03-net:
+        ipv4_address: 10.10.3.40
+    tmpfs:
+      - /tmp:noexec,nosuid,size=50m
+    restart: unless-stopped
+
+  # ===================== LAB03 — Internal Only =====================
+
+  lab02-java:
+    build:
+      context: ./lab02/java
+    container_name: lab02-java
+    hostname: lab02-java
+    networks:
+      lab03-net:
+        ipv4_address: 10.10.3.20
+    restart: unless-stopped
+
+  lab02-redis:
+    image: redis:7-alpine
+    container_name: lab02-redis
+    hostname: lab02-redis
+    command: redis-server --protected-mode no
+    networks:
+      lab03-net:
+        ipv4_address: 10.10.3.30
+    restart: unless-stopped
+
+  lab02-metadata:
+    build:
+      context: ./lab02/metadata
+    container_name: lab02-metadata
+    hostname: lab02-metadata
+    networks:
+      lab03-net:
+        ipv4_address: 10.10.3.50
+    restart: unless-stopped
+
+volumes:
+  web-data:
+  web-uploads:
+  ike-home:

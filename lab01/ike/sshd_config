@@ -1,0 +1,10 @@
+Port 22
+PermitRootLogin no
+PasswordAuthentication yes
+ChallengeResponseAuthentication no
+UsePAM yes
+X11Forwarding no
+PrintMotd yes
+AcceptEnv LANG LC_*
+# SFTP disabled to prevent file uploads
+# Subsystem sftp /usr/lib/openssh/sftp-server

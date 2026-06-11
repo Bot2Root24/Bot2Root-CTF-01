@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+{% block title %}Author Info - Bot2Root{% endblock %}
+{% block extra_css %}
+<style>
+    .author-card { border-radius: 12px; }
+    .author-card h4 { font-weight: 700; font-size: 1.15rem; }
+    .author-field {
+        padding: 10px 0;
+        border-bottom: 1px solid var(--border-subtle);
+    }
+    .author-field:last-of-type { border-bottom: none; }
+    .author-field-label {
+        color: var(--text-dim);
+        font-size: 0.8rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 2px;
+    }
+    .author-field-value {
+        color: var(--text-bright);
+        font-size: 0.95rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="row mt-4">
+    <div class="col-lg-8 mx-auto">
+        <div class="card author-card p-4">
+            <h4><i class="fas fa-user-circle" style="color: var(--cyan);"></i> Author Intelligence</h4>
+            <hr>
+            
+            <div class="author-field">
+                <div class="author-field-label">Post</div>
+                <div class="author-field-value">{{ blog.title }}</div>
+            </div>
+            
+            <!-- DOM XSS SINK: author_name rendered via innerHTML in JS below -->
+            <div class="author-field">
+                <div class="author-field-label">Author</div>
+                <div class="author-field-value"><span id="author-name-display" style="color: var(--neon-green);">Loading...</span></div>
+            </div>
+            
+            <div class="author-field">
+                <div class="author-field-label">Email</div>
+                <div class="author-field-value">{{ blog.author_email }}</div>
+            </div>
+
+            <div class="author-field">
+                <div class="author-field-label">Bio</div>
+                <div class="author-field-value">{{ blog.author_bio if blog.author_bio else 'No bio available' }}</div>
+            </div>
+
+            <div class="mt-3">
+                <a href="{{ url_for('blog_detail', blog_id=blog.id) }}" class="btn btn-sm btn-outline-cyber">
+                    <i class="fas fa-arrow-left"></i> Back to Post
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Hidden data element containing the raw author name from DB -->
+<script id="author-data" type="application/json">
+    {"name": "{{ blog.author_name|safe }}"}
+</script>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// DOM-based XSS:
+// Source: author name from database (stored via profile update)
+// Sink: innerHTML on #author-name-display
+// Attack: Set XSS payload as display name in profile, then visit author info
+// Flag: alert shows FLAG{b2r_stored_dom_xss_8e2f}
+document.addEventListener('DOMContentLoaded', function() {
+    try {
+        var dataEl = document.getElementById('author-data');
+        var rawText = dataEl.textContent;
+        var nameMatch = rawText.match(/"name":\s*"(.*)"/);
+        if (nameMatch && nameMatch[1]) {
+            // VULNERABLE: innerHTML sink
+            document.getElementById('author-name-display').innerHTML = nameMatch[1];
+        } else {
+            document.getElementById('author-name-display').textContent = 'Unknown';
+        }
+    } catch(e) {
+        document.getElementById('author-name-display').textContent = 'Error loading';
+    }
+});
+</script>
+{% endblock %}

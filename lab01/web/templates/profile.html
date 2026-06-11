@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block title %}Profile - Bot2Root{% endblock %}
+{% block extra_css %}
+<style>
+    .profile-card, .upload-link-card { border-radius: 12px; }
+    .profile-card h3 { font-weight: 700; font-size: 1.2rem; }
+    .profile-card h5 { font-weight: 700; font-size: 1rem; color: var(--text-bright); }
+    .profile-field {
+        padding: 8px 0;
+    }
+    .profile-field-label {
+        color: var(--text-dim);
+        font-size: 0.8rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    .profile-field-value {
+        color: var(--text-bright);
+        font-size: 0.95rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center mt-4">
+    <div class="col-lg-8">
+        <div class="card profile-card p-4">
+            <h3><i class="fas fa-id-badge" style="color: var(--cyan);"></i> Operator Profile</h3>
+            <hr>
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <div class="profile-field">
+                        <div class="profile-field-label">Username</div>
+                        <div class="profile-field-value" style="color: var(--neon-green);">{{ user.username }}</div>
+                    </div>
+                    <div class="profile-field">
+                        <div class="profile-field-label">Email</div>
+                        <div class="profile-field-value">{{ user.email }}</div>
+                    </div>
+                    <div class="profile-field">
+                        <div class="profile-field-label">Clearance</div>
+                        <div class="profile-field-value"><span class="badge-cyber">{{ user.role|upper }}</span></div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="profile-field">
+                        <div class="profile-field-label">Display Name</div>
+                        <div class="profile-field-value" style="color: var(--neon-green);">{{ user.name if user.name else 'Not configured' }}</div>
+                    </div>
+                </div>
+            </div>
+
+            <h5><i class="fas fa-edit"></i> Update Display Name</h5>
+            <form method="POST" action="{{ url_for('profile') }}">
+                <div class="mb-3">
+                    <label class="form-label">Display Name</label>
+                    <input type="text" name="name" class="form-control" 
+                           value="{{ user.name }}" placeholder="Enter your display name">
+                    <small>This name appears on your intel feed posts and profile.</small>
+                </div>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i> Save Changes
+                </button>
+            </form>
+        </div>
+
+        <div class="card upload-link-card p-4 mt-4">
+            <h5 style="font-weight: 700; font-size: 1rem;"><i class="fas fa-file-upload" style="color: var(--cyan);"></i> Document Upload</h5>
+            <p style="color: var(--text-dim); font-size: 0.9rem;">Upload your resume or assessment documents for processing.</p>
+            <a href="{{ url_for('upload_page') }}" class="btn btn-outline-cyber">
+                <i class="fas fa-upload"></i> Go to Upload Portal
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

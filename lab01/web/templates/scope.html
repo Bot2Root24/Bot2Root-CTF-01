@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block title %}Target Scope{% endblock %}
+{% block extra_css %}
+<style>
+    .scope-card { border-radius: 12px; }
+    .scope-card h4 { font-weight: 700; font-size: 1.2rem; }
+    .port-badge {
+        background: var(--bg-input);
+        border: 1px solid var(--border-subtle);
+        color: var(--neon-green);
+        font-family: 'JetBrains Mono', monospace;
+        font-weight: 600;
+        font-size: 1rem;
+        padding: 8px 18px;
+        border-radius: 8px;
+        transition: border-color 0.2s;
+    }
+    .port-badge:hover { border-color: var(--neon-green); }
+    .scope-warning {
+        background: rgba(248,81,73,0.06);
+        border: 1px solid rgba(248,81,73,0.2);
+        color: var(--red-alert);
+        border-radius: 10px;
+        font-size: 0.9rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="row mt-4">
+    <div class="col-md-7 mx-auto">
+        <div class="card scope-card p-4">
+            <h4 class="glow"><i class="fas fa-crosshairs"></i> Your Target Scope</h4>
+            <hr>
+
+            <p style="color:var(--text-bright); font-size: 0.95rem;">
+                Your assigned ports:
+            </p>
+
+            <div class="d-flex flex-wrap gap-2 mt-3 mb-4">
+                {% for port in info.ports %}
+                <span class="port-badge">{{ port }}</span>
+                {% endfor %}
+            </div>
+
+            <div class="alert scope-warning p-3">
+                <i class="fas fa-exclamation-triangle"></i>
+                <strong>Out-of-scope notice:</strong> Other ports on this IP belong to other instances.
+                Scanning or attacking ports outside the list above is not permitted.
+            </div>
+
+            <a href="{{ url_for('login') }}" class="btn btn-primary mt-2">
+                <i class="fas fa-arrow-right"></i> Start
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% block title %}Intel Feed - Bot2Root{% endblock %}
+{% block extra_css %}
+<style>
+    .feed-header {
+        margin-bottom: 8px;
+    }
+    .feed-header h3 {
+        font-weight: 700;
+        font-size: 1.3rem;
+    }
+    .feed-header p {
+        color: var(--text-dim);
+        font-size: 0.875rem;
+    }
+    .blog-card {
+        border-radius: 12px;
+        transition: border-color 0.2s ease, transform 0.2s ease;
+    }
+    .blog-card:hover {
+        transform: translateY(-2px);
+    }
+    .blog-meta {
+        color: var(--text-dim);
+        font-size: 0.8rem;
+        display: flex;
+        gap: 16px;
+        align-items: center;
+    }
+    .blog-meta i { color: var(--border-green-hover); }
+    .blog-title {
+        color: var(--text-white);
+        font-weight: 700;
+        font-size: 1.1rem;
+        margin-bottom: 8px;
+    }
+    .blog-excerpt {
+        color: var(--text-dim);
+        font-size: 0.9rem;
+        line-height: 1.7;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="row mt-4">
+    <div class="col-lg-10 mx-auto">
+        <div class="feed-header">
+            <h3><i class="fas fa-newspaper" style="color: var(--cyan);"></i> Intel Feed</h3>
+            <p>Internal knowledge base and security advisories</p>
+        </div>
+        <hr>
+        
+        {% for blog in blogs %}
+        <div class="card blog-card p-4 mb-3">
+            <h5 class="blog-title">{{ blog.title }}</h5>
+            <div class="blog-meta mb-3">
+                <span><i class="fas fa-user-secret"></i> {{ blog.author_name if blog.author_name else blog.author_username }}</span>
+                <span><i class="fas fa-clock"></i> {{ blog.created_at }}</span>
+            </div>
+            <p class="blog-excerpt">{{ blog.content[:200] }}{% if blog.content|length > 200 %}...{% endif %}</p>
+            <div>
+                <a href="{{ url_for('blog_detail', blog_id=blog.id) }}" class="btn btn-sm btn-primary">
+                    <i class="fas fa-eye"></i> Read More
+                </a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

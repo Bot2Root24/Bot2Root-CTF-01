@@ -1,0 +1,300 @@
+{% extends "base.html" %}
+{% block title %}Dashboard - Bot2Root{% endblock %}
+
+{% block extra_css %}
+<style>
+    .dashboard-banner {
+        background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-elevated) 50%, var(--bg-card) 100%);
+        border: 1px solid var(--border-subtle);
+        border-radius: 16px;
+        padding: 48px 32px;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+    .dashboard-banner::before {
+        content: '';
+        position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+        background: radial-gradient(ellipse at 50% 0%, rgba(0,255,65,0.06) 0%, transparent 60%);
+        pointer-events: none;
+    }
+    .brand-title {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 2.8rem;
+        font-weight: 800;
+        letter-spacing: 6px;
+        color: var(--neon-green);
+        text-shadow: 0 0 40px rgba(0,255,65,0.2);
+        position: relative;
+    }
+    .brand-subtitle {
+        color: var(--text-dim);
+        font-size: 1rem;
+        font-weight: 400;
+        margin-top: 8px;
+        letter-spacing: 1px;
+    }
+    .operator-info {
+        color: var(--text-dim);
+        font-size: 0.9rem;
+        margin-top: 16px;
+    }
+
+    .stat-card {
+        background: var(--bg-card);
+        border: 1px solid var(--border-subtle);
+        border-radius: 12px;
+        padding: 24px;
+        text-align: center;
+        transition: all 0.25s ease;
+    }
+    .stat-card:hover {
+        border-color: var(--border-green-hover);
+        transform: translateY(-3px);
+        box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+    }
+    .stat-icon {
+        font-size: 1.6rem;
+        width: 48px; height: 48px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 12px;
+        margin-bottom: 12px;
+    }
+    .stat-icon.green  { background: rgba(0,255,65,0.08);  color: var(--neon-green); }
+    .stat-icon.cyan   { background: rgba(88,166,255,0.08); color: var(--cyan); }
+    .stat-icon.orange { background: rgba(210,153,34,0.08); color: var(--orange); }
+    .stat-icon.purple { background: rgba(188,140,255,0.08); color: var(--purple); }
+    .stat-label {
+        color: var(--text-dim);
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-weight: 600;
+    }
+    .stat-value {
+        color: var(--text-white);
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-top: 4px;
+    }
+
+    .challenge-card {
+        border-left: 3px solid var(--neon-green);
+        border-radius: 12px;
+        height: 100%;
+    }
+    .challenge-card.network  { border-left-color: var(--cyan); }
+    .challenge-card.advanced { border-left-color: var(--orange); }
+    .challenge-card h5 {
+        font-weight: 700;
+        font-size: 1.05rem;
+        margin-bottom: 4px;
+    }
+    .challenge-desc {
+        color: var(--text-dim);
+        font-size: 0.875rem;
+        line-height: 1.6;
+    }
+    .challenge-list {
+        list-style: none;
+        padding: 0;
+        margin: 16px 0 0;
+    }
+    .challenge-list li {
+        padding: 4px 0;
+        font-size: 0.875rem;
+        color: var(--text-bright);
+    }
+    .challenge-list li i {
+        width: 16px;
+        font-size: 0.7rem;
+        margin-right: 6px;
+    }
+
+    .difficulty .star     { color: var(--neon-green); font-size: 0.75rem; }
+    .difficulty .star-empty { color: var(--border-subtle); font-size: 0.75rem; }
+
+    .rules-card {
+        border-radius: 12px;
+        border: 1px solid var(--border-subtle);
+    }
+    .rules-card h5 {
+        font-weight: 700;
+        font-size: 1rem;
+    }
+    .rules-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+    .rules-list li {
+        padding: 6px 0;
+        font-size: 0.875rem;
+        color: var(--text-bright);
+    }
+    .rules-list li i {
+        width: 18px;
+        text-align: center;
+        margin-right: 8px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Banner -->
+<div class="dashboard-banner mb-4">
+    <div class="brand-title">
+        <i class="fas fa-skull-crossbones" style="font-size: 2rem; display: block; margin-bottom: 8px;"></i>
+        BOT2ROOT
+    </div>
+    <div class="brand-subtitle">
+        Web &amp; Network Penetration Testing CTF
+    </div>
+    <div class="operator-info">
+        <i class="fas fa-user-shield"></i> Operator: <span style="color: var(--neon-green); font-weight: 600;">{{ user.name if user.name else user.username }}</span>
+        <span style="color: var(--border-subtle); margin: 0 8px;">|</span>
+        <i class="fas fa-id-badge"></i> Clearance: <span class="badge-cyber">{{ user.role|upper }}</span>
+    </div>
+</div>
+
+<!-- Stats Row -->
+<div class="row g-3 mb-4">
+    <div class="col-6 col-md-3">
+        <div class="stat-card">
+            <div class="stat-icon green"><i class="fas fa-flag"></i></div>
+            <div class="stat-label">Total Flags</div>
+            <div class="stat-value">15+</div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="stat-card">
+            <div class="stat-icon cyan"><i class="fas fa-server"></i></div>
+            <div class="stat-label">Machines</div>
+            <div class="stat-value">11</div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="stat-card">
+            <div class="stat-icon purple"><i class="fas fa-network-wired"></i></div>
+            <div class="stat-label">Networks</div>
+            <div class="stat-value">3</div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="stat-card">
+            <div class="stat-icon orange"><i class="fas fa-crosshairs"></i></div>
+            <div class="stat-label">Vectors</div>
+            <div class="stat-value">10+</div>
+        </div>
+    </div>
+</div>
+
+<!-- Challenge Categories -->
+<div class="row g-3 mb-4">
+    <div class="col-md-4">
+        <div class="card challenge-card p-4">
+            <h5 style="color: var(--neon-green);"><i class="fas fa-globe"></i> Web Pentesting</h5>
+            <hr>
+            <p class="challenge-desc">
+                Identify authentication flaws, injection points, client-side vulnerabilities, and insecure file handling.
+            </p>
+            <ul class="challenge-list">
+                <li><i class="fas fa-angle-right" style="color: var(--neon-green);"></i> SQLi WAF Bypass</li>
+                <li><i class="fas fa-angle-right" style="color: var(--neon-green);"></i> Stored DOM XSS</li>
+                <li><i class="fas fa-angle-right" style="color: var(--neon-green);"></i> File Upload RCE</li>
+                <li><i class="fas fa-angle-right" style="color: var(--neon-green);"></i> Access Control</li>
+            </ul>
+            <div class="difficulty mt-2">
+                <span class="star"><i class="fas fa-star"></i></span>
+                <span class="star"><i class="fas fa-star"></i></span>
+                <span class="star"><i class="fas fa-star"></i></span>
+                <span class="star"><i class="fas fa-star"></i></span>
+                <span class="star-empty"><i class="fas fa-star"></i></span>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card challenge-card network p-4">
+            <h5 style="color: var(--cyan);"><i class="fas fa-network-wired"></i> Network Pentesting</h5>
+            <hr>
+            <p class="challenge-desc">
+                Enumerate services, crack credentials, exploit protocols, and pivot through segmented networks.
+            </p>
+            <ul class="challenge-list">
+                <li><i class="fas fa-angle-right" style="color: var(--cyan);"></i> FTP Brute Force</li>
+                <li><i class="fas fa-angle-right" style="color: var(--cyan);"></i> SMB Enumeration</li>
+                <li><i class="fas fa-angle-right" style="color: var(--cyan);"></i> VPN PSK Cracking</li>
+                <li><i class="fas fa-angle-right" style="color: var(--cyan);"></i> SSH Pivoting</li>
+            </ul>
+            <div class="difficulty mt-2">
+                <span class="star"><i class="fas fa-star"></i></span>
+                <span class="star"><i class="fas fa-star"></i></span>
+                <span class="star"><i class="fas fa-star"></i></span>
+                <span class="star-empty"><i class="fas fa-star"></i></span>
+                <span class="star-empty"><i class="fas fa-star"></i></span>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card challenge-card advanced p-4">
+            <h5 style="color: var(--orange);"><i class="fas fa-crosshairs"></i> Advanced Exploitation</h5>
+            <hr>
+            <p class="challenge-desc">
+                Chain vulnerabilities, exploit SSRF, escalate privileges, and achieve full system compromise.
+            </p>
+            <ul class="challenge-list">
+                <li><i class="fas fa-angle-right" style="color: var(--orange);"></i> SUID Privilege Escalation</li>
+                <li><i class="fas fa-angle-right" style="color: var(--orange);"></i> Cron Job Abuse</li>
+                <li><i class="fas fa-angle-right" style="color: var(--orange);"></i> SSRF Credential Leak</li>
+                <li><i class="fas fa-angle-right" style="color: var(--orange);"></i> LOLBin Root</li>
+            </ul>
+            <div class="difficulty mt-2">
+                <span class="star"><i class="fas fa-star"></i></span>
+                <span class="star"><i class="fas fa-star"></i></span>
+                <span class="star"><i class="fas fa-star"></i></span>
+                <span class="star"><i class="fas fa-star"></i></span>
+                <span class="star"><i class="fas fa-star"></i></span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Rules -->
+<div class="card rules-card p-4 mb-4">
+    <h5><i class="fas fa-exclamation-triangle" style="color: var(--orange);"></i> Rules of Engagement</h5>
+    <hr>
+    <div class="row">
+        <div class="col-md-6">
+            <ul class="rules-list">
+                <li><i class="fas fa-check" style="color: var(--green-muted);"></i> Enumerate everything. Scan all ports (TCP + UDP).</li>
+                <li><i class="fas fa-check" style="color: var(--green-muted);"></i> Document your findings. Keep notes on every step.</li>
+                <li><i class="fas fa-check" style="color: var(--green-muted);"></i> Think laterally. Credentials may be reused.</li>
+            </ul>
+        </div>
+        <div class="col-md-6">
+            <ul class="rules-list">
+                <li><i class="fas fa-ban" style="color: var(--red-alert);"></i> No DoS attacks against the infrastructure.</li>
+                <li><i class="fas fa-ban" style="color: var(--red-alert);"></i> Do not attack other students' instances.</li>
+                <li><i class="fas fa-ban" style="color: var(--red-alert);"></i> Do not modify or delete flags.</li>
+            </ul>
+        </div>
+    </div>
+    <div class="mt-2" style="color: var(--text-dim); font-size: 0.82rem;">
+        <i class="fas fa-flag" style="color: var(--green-muted);"></i> Flag format: <code>FLAG{b2r_description_xxxx}</code>
+    </div>
+</div>
+
+<!-- Hidden DOM XSS sink -->
+<div id="welcome-banner" class="d-none"></div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var nameEl = document.querySelector('[data-username]');
+});
+</script>
+{% endblock %}

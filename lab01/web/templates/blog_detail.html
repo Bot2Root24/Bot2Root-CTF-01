@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}{{ blog.title }} - Bot2Root{% endblock %}
+{% block extra_css %}
+<style>
+    .blog-detail-card {
+        border-radius: 12px;
+    }
+    .blog-detail-card h3 {
+        color: var(--text-white);
+        font-weight: 700;
+        font-size: 1.4rem;
+    }
+    .blog-detail-meta {
+        color: var(--text-dim);
+        font-size: 0.82rem;
+        display: flex;
+        gap: 16px;
+    }
+    .blog-detail-meta i { color: var(--border-green-hover); }
+    .blog-content {
+        color: var(--text-bright);
+        line-height: 1.9;
+        font-size: 0.95rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="row mt-4">
+    <div class="col-lg-10 mx-auto">
+        <div class="card blog-detail-card p-4">
+            <h3>{{ blog.title }}</h3>
+            <hr>
+            <div class="blog-detail-meta mb-3">
+                <span><i class="fas fa-user-secret"></i> {{ blog.author_name if blog.author_name else blog.author_username }}</span>
+                <span><i class="fas fa-clock"></i> {{ blog.created_at }}</span>
+            </div>
+            <div class="blog-content mt-3">
+                <p>{{ blog.content }}</p>
+            </div>
+            <hr>
+            <div class="d-flex gap-2">
+                <a href="{{ url_for('blog_author_info', blog_id=blog.id) }}" class="btn btn-sm btn-primary">
+                    <i class="fas fa-user-circle"></i> View Author Info
+                </a>
+                <a href="{{ url_for('blog_list') }}" class="btn btn-sm btn-outline-cyber">
+                    <i class="fas fa-arrow-left"></i> Back to Feed
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
