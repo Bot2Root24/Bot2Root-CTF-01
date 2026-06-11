@@ -246,14 +246,35 @@ docker exec -it lab01-web /bin/bash
 
 ## Credits
 
-Created by **Raghuveer Singh Chouhan** ([@Bot@Root](https://github.com/bot2root))
+Created by **Raghuveer Singh Chouhan** ([@Bot2Root](https://github.com/bot2root))
 
 Built for security training and education. Use responsibly.
 
-Follow For More Cyber Security Content !!
+<p><b>Follow For More Cyber Security Content !!</b></p>
 
-Youtube : ([@Bot@Root](https://www.youtube.com/bot2root))
-Instagram : ([@Bot@Root](https://www.instagram.com/bot2root))
+<table>
+  <tr>
+    <td valign="middle">
+      <a href="https://www.youtube.com/bot2root">
+        <img width="20" height="20" alt="YouTube" src="https://github.com/user-attachments/assets/5403ca51-b6f4-4f54-be4b-0a0428f52b45">
+      </a>
+    </td>
+    <td valign="middle">
+      <a href="https://www.youtube.com/bot2root">Bot2Root</a>
+    </td>
+  </tr>
+  <tr>
+    <td valign="middle">
+      <a href="https://www.instagram.com/bot2root">
+        <img width="20" height="20" alt="Instagram" src="https://github.com/user-attachments/assets/e3e5f497-0a46-48f4-8a20-ba44b0b83caa">
+      </a>
+    </td>
+    <td valign="middle">
+      <a href="https://www.instagram.com/bot2root">Bot2Root</a>
+    </td>
+  </tr>
+</table>
+
 ---
 
 ## License
